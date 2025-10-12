@@ -2,8 +2,6 @@ package chess;
 
 import java.util.ArrayList;
 
-import chess.ReturnPiece;
-
 class ReturnPlay {
 	enum Message {ILLEGAL_MOVE, DRAW, 
 				  RESIGN_BLACK_WINS, RESIGN_WHITE_WINS, 

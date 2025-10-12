@@ -3,8 +3,6 @@ package chess;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import chess.ReturnPiece;
-
 public class PlayChess {
 
 	public static void main(String[] args) {
