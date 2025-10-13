@@ -11,16 +11,20 @@ public class King extends Piece {
     
     @Override
     public List<Position> getPossibleMoves(Board board) {
+        return getPossibleMoves(board, true);
+    }
+
+    public List<Position> getPossibleMoves(Board board, boolean includeCastling) {
         List<Position> moves = new ArrayList<>();
         int currentRank = position.getRank();
         int currentFile = position.getFile();
-        
+
         // King moves one square in any direction
         int[][] directions = {
             {0, 1}, {0, -1}, {1, 0}, {-1, 0},
             {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
         };
-        
+
         for (int[] dir : directions) {
             Position newPos = new Position(currentFile + dir[0], currentRank + dir[1]);
             if (newPos.isValid()) {
@@ -30,9 +34,9 @@ public class King extends Piece {
                 }
             }
         }
-        
-        // Castling
-        if (!hasMoved) {
+
+        // Castling - only include if requested to avoid infinite recursion
+        if (includeCastling && !hasMoved) {
             // Kingside castling
             if (canCastle(board, true)) {
                 moves.add(new Position(currentFile + 2, currentRank));
@@ -42,7 +46,7 @@ public class King extends Piece {
                 moves.add(new Position(currentFile - 2, currentRank));
             }
         }
-        
+
         return moves;
     }
     
@@ -84,8 +88,17 @@ public class King extends Piece {
             for (int j = 0; j < 8; j++) {
                 Piece piece = board.getPiece(new Position(j, i));
                 if (piece != null && piece.isWhite() != isWhite) {
-                    if (piece.canMoveTo(pos, board)) {
-                        return true;
+                    // For enemy kings, exclude castling moves to avoid infinite recursion
+                    if (piece instanceof King) {
+                        King enemyKing = (King) piece;
+                        List<Position> kingMoves = enemyKing.getPossibleMoves(board, false);
+                        if (kingMoves.contains(pos)) {
+                            return true;
+                        }
+                    } else {
+                        if (piece.canMoveTo(pos, board)) {
+                            return true;
+                        }
                     }
                 }
             }
