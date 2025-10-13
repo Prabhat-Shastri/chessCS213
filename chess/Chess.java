@@ -1,3 +1,4 @@
+//Shashank Vemparala (sv763) & Aiman Koli (mk2177) 
 package chess;
 
 import java.util.ArrayList;
